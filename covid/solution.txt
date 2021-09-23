@@ -1,0 +1,70 @@
+Query 1:
+
+select sum(total_vaccinations) as total_vaccinations , date from country_vaccinations where country = "Singapore" group by date;
+
+Query 2:
+
+select vaccines, sum(daily_vaccinations) as 
+total_administrated from country_vaccinations
+where iso_code in ('AFG', 'ARE', 'ARM', 'BGD',
+ 'BHR', 'BRN', 'BTN', 'CCK', 'CHN', 'CXR', 'HKG',
+ 'IDN', 'IND', 'IOT', 'IRN', 'IRQ', 'ISR', 'JOR',
+ 'JPN', 'KGZ', 'KHM', 'KOR', 'KWT', 'LAO', 'LBN',
+ 'LKA', 'MAC', 'MDV', 'MMR', 'MNG', 'MYS', 'NPL',
+ 'OMN', 'PAK', 'PHL', 'PRK', 'PSE', 'QAT', 'SAU',
+ 'SGP', 'SYR', 'THA', 'TJK', 'TKM', 'TLS', 'TWN',
+ 'UZB', 'VNM', 'YEM') group by vaccines;
+
+Query 3:  
+
+select country, max(daily_vaccinations_per_million) from country_vaccinations group by country 
+order by max(daily_vaccinations_per_million) desc;
+
+
+Query 4: 
+select vaccine, sum(total_vaccinations) as total_adminstrator from country_vaccinations_by_manufacturer 
+group by vaccine order by sum(total_vaccinations) desc;
+
+
+Query 5:
+
+DROP TABLE IF EXISTS date_difference;
+Create view date_difference as SELECT vaccine, MIN(date) AS first_Date
+FROM country_vaccinations_by_manufacturer
+GROUP BY vaccine order by first_date limit 4;
+
+select *from date_difference;
+
+select datediff(first_date, '2020-12-16', '2020-12-27') AS Difference_In_Days FROM date_difference;
+
+
+
+Query: 6
+
+SELECT location , vaccine
+    FROM country_vaccinations_by_manufacturer
+    GROUP BY vaccine
+    ORDER BY COUNT(location) DESC;
+
+Query: 7
+
+select country, vaccines, people_fully_vaccinated_per_hundred as 
+vaccinated_percentage 
+from country_vaccinations group by country, vaccines 
+having vaccinated_percentage > 60.00  order by vaccinated_percentage desc ;
+
+
+Query 8:
+SELECT MONTHNAME(date) as month, vaccine, sum(total_vaccinations) as monthly_total_vaccine
+FROM country_vaccinations_by_manufacturer 
+GROUP BY vaccine;
+
+Query 9:
+select country, sum(day(STR_TO_DATE(date, '%d/%m/%Y'))) as Days_to_over_50per from country_vaccinations 
+where total_vaccinations_per_hundred > 50 group by country; 
+
+
+Query 10:
+
+select sum(total_vaccinations) as globel_total, vaccine from country_vaccinations_by_manufacturer 
+group by vaccine;
